@@ -1,0 +1,26 @@
+- name : creating ec2 instance
+  hosts: local
+  connection: local
+  become: yes
+  vars:
+    ami_id: ami-09c813fb71547fc4f
+    sg_id: sg-05f323a81d59459e1
+    zone_id: Z00484781U0O1QG6VX0D8
+    domain_name: mitha.fun
+    instances:
+    - mongodb
+
+  tasks:
+  - name: ec2_instance_mongo
+    amazon.aws.ec2.instance:
+     instance_type: t2.micro
+     security_group: "{{sg_id}}"
+     image_id: "{{ami_id}}"
+     name: "{{item}}"
+     tags:
+       Name: "{{ item }}"
+     loop: {{ instances }}
+     register: ec2_output
+     
+
+    
