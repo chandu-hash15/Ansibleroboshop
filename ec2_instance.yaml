@@ -19,7 +19,7 @@
      name: "{{item}}"
      tags:
        Name: "{{ item }}"
-     loop: "{{ instances }}""
+     loop: "{{ instances }}"
      register: ec2_output
      
 
