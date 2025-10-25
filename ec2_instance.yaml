@@ -7,7 +7,8 @@
     zone_id: "Z00484781U0O1QG6VX0D8"
     domain_name: "mitha.fun" 
     instances:
-    - mongodb 
+    - mongodb
+    - reddis
   tasks:
   - name: creating ec2 instance
     amazon.aws.ec2_instance:
