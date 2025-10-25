@@ -23,6 +23,28 @@
     register: ec2_output
      
 
-  - name: printing the ec2_output
-    ansible.builtin.debug:
-      msg: "{{ec2_output}}"
+ # - name: printing the ec2_output
+ #   ansible.builtin.debug:
+ #     msg: "{{ec2_output}}"
+
+ # - name : print public ip                                  
+ #   ansible.builtin.debug:
+ #    msg: "{{ item.instance[0].public_ip_address }}"
+ #   loop: "{{ec2_output.results}}"
+
+ # - name : print private ip
+ #   ansible.builtin.debug:
+ #     msg: "{{ item.instance[0].private_ip_address }}"
+ #   loop: "{{ec2_output.results}}"
+
+- name: creatiing rote53 records
+  amazon.aws.route53:
+    state: present
+    zone: "{{ domain_name }}"
+    record: "{{ item.item }}. {{ domain_name}}"
+    type: A
+    ttl: 1
+    value: "{{ item.instance[0].private_ip_address }}"
+    wait: true
+    overwrite:true
+  loop: "{{ec2_output.results}}"
