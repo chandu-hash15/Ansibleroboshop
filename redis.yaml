@@ -1,0 +1,26 @@
+- name: installing reddis
+  hosts: local
+  become: yes
+  tasks:
+  - name: disable reddis
+    ansible.builtin.command: dnf module disable redis -y
+
+  - name: enable reddis
+    ansible.builtin.command: dnf module enable redis:7 -y
+
+  - name: Install reddis
+    ansible.builtin.package:
+      name: reddis
+      state: present
+
+  - name: Replace old version string
+    ansible.builtin.replace:
+      path: /etc/redis/redis.conf
+      regexp: '127.0.0.1'
+      replace: '0.0.0.0'
+
+  - name: disable protected mode
+    ansible.builtin.lineinfile:
+      path: /etc/redis/redis.conf
+      regexp: 'protected-mode'
+      line: 'protected-mode no'
