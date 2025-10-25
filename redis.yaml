@@ -10,7 +10,7 @@
 
   - name: Install reddis
     ansible.builtin.package:
-      name: reddis
+      name: redis
       state: present
 
   - name: Replace old version string
