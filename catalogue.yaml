@@ -57,7 +57,7 @@
       state: present
 
   - name: connect to monodb client
-    ansible.builtin.command: mongosh --host MONGODB-SERVER-IPADDRESS </app/db/master-data.js
+    ansible.builtin.command: mongosh mongodb.mitha.fun --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')
     register: catalogue_output
 
   - name: print catalogue ec2_output
