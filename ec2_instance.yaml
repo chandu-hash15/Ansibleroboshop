@@ -37,14 +37,13 @@
  #     msg: "{{ item.instance[0].private_ip_address }}"
  #   loop: "{{ec2_output.results}}"
 
-- name: creatiing rote53 records
-  amazon.aws.route53:
+  - name: creatiing rote53 records
+    amazon.aws.route53:
     state: present
     zone: "{{ domain_name }}"
-    record: "{{ item.item }}. {{ domain_name}}"
+    record: "{{ item.item }}.{{ domain_name}}"
     type: A
     ttl: 1
     value: "{{ item.instance[0].private_ip_address }}"
-    wait: true
     overwrite: true
   loop: "{{ ec2_output.results }}"
