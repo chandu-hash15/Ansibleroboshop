@@ -1,5 +1,5 @@
-- name : creating ec2 instance
-  hosts: local
+- name: creating ec2 instance
+  hosts: localhost
   connection: local
   become: yes
   vars:
@@ -8,42 +8,42 @@
     zone_id: Z00484781U0O1QG6VX0D8
     domain_name: mitha.fun
     instances:
-    - mongodb
+      - mongodb
 
   tasks:
-  - name: ec2_instance_mongo
-    amazon.aws.ec2_instance:
-      instance_type: t2.micro
-      security_group: "{{sg_id}}"
-      image_id: "{{ami_id}}"
-      name: "{{item}}"
-      tags:
-        Name: "{{ item }}"
-    loop: "{{ instances }}"
-    register: ec2_output
-     
+    - name: launch ec2 instances
+      amazon.aws.ec2_instance:
+        instance_type: t2.micro
+        image_id: "{{ ami_id }}"
+        security_group_ids:
+          - "{{ sg_id }}"
+        tags:
+          Name: "{{ item }}"
+      loop: "{{ instances }}"
+      register: ec2_output
 
- # - name: printing the ec2_output
- #   ansible.builtin.debug:
- #     msg: "{{ec2_output}}"
+    # debug examples (commented out)
+    # - name: printing the ec2_output
+    #   ansible.builtin.debug:
+    #     msg: "{{ec2_output}}"
 
- # - name : print public ip                                  
- #   ansible.builtin.debug:
- #    msg: "{{ item.instance[0].public_ip_address }}"
- #   loop: "{{ec2_output.results}}"
+    # - name : print public ip
+    #   ansible.builtin.debug:
+    #     msg: "{{ item.instance[0].public_ip_address }}"
+    #   loop: "{{ec2_output.results}}"
 
- # - name : print private ip
- #   ansible.builtin.debug:
- #     msg: "{{ item.instance[0].private_ip_address }}"
- #   loop: "{{ec2_output.results}}"
+    # - name : print private ip
+    #   ansible.builtin.debug:
+    #     msg: "{{ item.instance[0].private_ip_address }}"
+    #   loop: "{{ec2_output.results}}"
 
-  - name: creatiing rote53 records
-    amazon.aws.route53:
-    state: present
-    zone: "{{ domain_name }}"
-    record: "{{ item.item }}.{{ domain_name}}"
-    type: A
-    ttl: 1
-    value: "{{ item.instance[0].private_ip_address }}"
-    overwrite: true
-  loop: "{{ ec2_output.results }}"
+    - name: creating route53 records
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain_name }}"
+        record: "{{ item.item }}.{{ domain_name }}"
+        type: A
+        ttl: 1
+        value: "{{ item.instance[0].private_ip_address }}"
+        overwrite: true
+      loop: "{{ ec2_output.results }}"
