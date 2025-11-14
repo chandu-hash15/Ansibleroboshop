@@ -20,7 +20,7 @@
 
   - name: Ensure nginx service is started and enabled
     ansible.builtin.service:
-      name: mongodb
+      name: mongod
       state: started
       enabled: yes
 
