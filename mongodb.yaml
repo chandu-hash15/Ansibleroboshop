@@ -12,7 +12,7 @@
       name: mongodb-org
       state: present
 
-   -name: Replace old version string
+  - name: Replace old version string
     ansible.builtin.replace:
       path: /etc/mongod.conf
       regexp: '127.0.0.1'
