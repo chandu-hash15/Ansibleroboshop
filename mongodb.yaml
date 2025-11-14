@@ -2,24 +2,26 @@
   hosts: mongodb
   become: yes
   tasks:
-  - name: copying mongo.repo file to /etc/yum.repos.d/mongo.repo
+  - name: configuring mongodb
     ansible.builtin.copy:
       src: mongo.repo
       dest: /etc/yum.repos.d/mongo.repo
 
-  - name: Install ntpdate
+  - name: Installing mongo db
     ansible.builtin.package:
       name: mongodb-org
       state: present
 
-  - name: Replace old version string
+   -name: Replace old version string
     ansible.builtin.replace:
       path: /etc/mongod.conf
       regexp: '127.0.0.1'
       replace: '0.0.0.0'
 
-  - name: Start service httpd, if not started
+  - name: Ensure nginx service is started and enabled
     ansible.builtin.service:
-      name: mongod
+      name: mongodb
       state: started
-      enabled: yes 
+      enabled: yes
+
+ 
