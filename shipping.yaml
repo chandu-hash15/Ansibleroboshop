@@ -1,0 +1,69 @@
+- name: creating shipping configuratipn
+  hosts: shipping
+  become: yes
+  tasks:
+   - name: install maven
+     ansible.builtin.package:
+      name: "{{ item }}"
+      state: present
+     loop:
+     - maven
+     - mysql
+
+   - name: Add the system user roboshop'
+     ansible.builtin.user:
+      name: roboshop
+      comment: roboshop system user
+      system: true
+      shell: /sbin/nologin
+      home: /app
+
+   - name: remove app directory if it exisits
+     ansible.builtin.file:
+      state: absent
+      path: /app
+
+   - name: Create a directory if it does not exist
+     ansible.builtin.file:
+      state: directory
+      path: /app
+
+
+   - name: removing the exist file
+     ansible.builtin.file:
+      state: absent
+      path: /tmp/shipping.zip
+
+   - name: download shipping app
+     ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+      dest: /tmp/shipping.zip
+
+   - name: unzip the downloaded file
+     ansible.builtin.unarchive:
+      src: /tmp/shipping.zip
+      dest: /app
+      remote_src: yes
+
+   - name: installing dependencies
+     ansible.builtin.command: mvn clean package
+     args:
+       chdir: /app
+
+   - name: moving jar file
+     ansible.builtin.command: mv target/shipping-1.0.jar shipping.jar
+
+   - name: importing shipping data into mysql
+     community.mysql.mysql_db:
+        state: import
+        name: all
+        login_host: mysql.mitha.fun
+        login_user: root
+        login_password: RoboShop@1
+        target: "{{ item }}"
+     loop:
+     - /app/db/schema.sql
+     - /app/db/app-user.sql
+     - /app/db/master-data.sql
+
+   
