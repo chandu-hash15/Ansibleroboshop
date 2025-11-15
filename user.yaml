@@ -34,8 +34,8 @@
 
   - name: removing the existing zip file if present
     ansible.builtin.file:
-    state: absent
-    path: /tmp/user.zip
+      state: absent
+      path: /tmp/user.zip
 
   - name: Downloading code 
     ansible.builtin.get_url:
@@ -50,7 +50,7 @@
 
   - name: Installing dependencies
     community.general.npm:
-    path: /app
+      path: /app
 
   - name: Copy file 
     ansible.builtin.copy:
