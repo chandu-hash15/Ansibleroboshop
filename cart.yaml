@@ -16,7 +16,7 @@
   - name: Add a new cart named 'roboshop_user'
     ansible.builtin.cart:
       name: roboshop
-      comment: roboshop system cart
+      comment: roboshop system user
       state: present
       system: true
       shell: /sbin/nologin
