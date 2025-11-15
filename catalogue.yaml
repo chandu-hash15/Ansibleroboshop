@@ -21,11 +21,22 @@
       shell: /sbin/nologin
       home: /app
 
+  - name: remove app directory if it exisits
+    ansible.builtin.file:
+      state: absent
+      path: /app
+
   - name: Create a directory if it does not exist
     ansible.builtin.file:
       state: directory
       path: /app
+
   
+  - name: removing the exist file
+    ansible.builtin.file:
+      state: absent
+      path: /tmp/catalogue.zip
+
   - name: download catalogue app
     ansible.builtin.get_url:
       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip

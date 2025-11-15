@@ -8,6 +8,11 @@
     domain_name: "mitha.fun" 
     instances:
     - mongodb
+    - reddis
+    - catalogue
+    - mysql
+    - rabbitmq
+    - user
     
   tasks:
   - name: creating ec2 instance
