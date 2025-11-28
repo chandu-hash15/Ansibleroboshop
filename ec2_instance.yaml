@@ -9,6 +9,8 @@
     instances:
     - mongodb
     - reddis
+    - mysql
+    - rabbitmq
     
     
   tasks:
